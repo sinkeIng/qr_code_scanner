@@ -306,6 +306,12 @@ class QRViewControllerWeb implements QRViewController {
     // TODO: flash is simply not supported by JavaScipt
     return;
   }
+
+  @override
+  Future<String> captureImage() {
+    // TODO: implement captureImage
+    throw UnimplementedError();
+  }
 }
 
 Widget createWebQrView({onPlatformViewCreated, CameraFacing? cameraFacing}) =>

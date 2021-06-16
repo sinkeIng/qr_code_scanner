@@ -316,6 +316,15 @@ class QRViewController {
     }
   }
 
+  //Capturing an image
+  Future<String> captureImage() async {
+    try {
+      return await _channel.invokeMethod('captureImage');
+    } on PlatformException catch (e) {
+      throw CameraException(e.code, e.message);
+    }
+  }
+
   /// Stops the camera and disposes the barcode stream.
   void dispose() {
     if (defaultTargetPlatform == TargetPlatform.iOS) stopCamera();
