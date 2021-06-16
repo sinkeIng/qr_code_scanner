@@ -94,20 +94,23 @@ class QRView(messenger: BinaryMessenger, id: Int, private val params: HashMap<St
     }
 
     private fun captureImage(result: MethodChannel.Result) {
-        barcodeView?.getBarcodeView()?.getCameraInstance()
+        barcodeView?.getCameraInstance()
             .requestPreview(object : PreviewCallback() {
                 @Override
                 fun onPreview(sourceData: SourceData) {
-                    val bmp: Bitmap = sourceData.getBitmap()
+                    var bmp: Bitmap = sourceData.bitmap
                     val byteArrayOutputStream = ByteArrayOutputStream()
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
                     val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+                    bmp.recycle()
+                    bmp = null
                     val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
                     result(encoded)
                 }
 
                 @Override
                 fun onPreviewError(e: Exception?) {
+                    e?.printStackTrace()
                     result("error")
                 }
             })
