@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -317,7 +318,7 @@ class QRViewController {
   }
 
   //Capturing an image
-  Future<String> captureImage() async {
+  Future<Uint8List> captureImage() async {
     try {
       return await _channel.invokeMethod('captureImage');
     } on PlatformException catch (e) {

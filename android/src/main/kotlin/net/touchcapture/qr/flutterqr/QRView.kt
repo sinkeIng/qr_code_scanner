@@ -18,6 +18,11 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.platform.PlatformView
+import com.journeyapps.barcodescanner.camera.PreviewCallback
+import com.journeyapps.barcodescanner.SourceData
+import android.graphics.Bitmap
+import java.io.ByteArrayOutputStream
+import android.util.Base64
 
 
 class QRView(messenger: BinaryMessenger, id: Int, private val params: HashMap<String, Any>) :
@@ -94,26 +99,31 @@ class QRView(messenger: BinaryMessenger, id: Int, private val params: HashMap<St
     }
 
     private fun captureImage(result: MethodChannel.Result) {
-        barcodeView?.getCameraInstance()
-            .requestPreview(object : PreviewCallback() {
-                @Override
-                fun onPreview(sourceData: SourceData) {
-                    var bmp: Bitmap = sourceData.bitmap
+        barcodeView?.cameraInstance?.requestPreview(object : PreviewCallback {
+            override fun onPreview(sourceData: SourceData?) {
+                sourceData?.bitmap?.let { bmp ->
                     val byteArrayOutputStream = ByteArrayOutputStream()
                     bmp.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
                     val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
                     bmp.recycle()
-                    bmp = null
-                    val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                    result(encoded)
+                    //val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                    Shared.activity?.runOnUiThread {
+                        result.success(byteArray)
+                    }
+                } ?: run {
+                    Shared.activity?.runOnUiThread {
+                        result.error(null, "Image is null", null)
+                    }
                 }
+            }
 
-                @Override
-                fun onPreviewError(e: Exception?) {
-                    e?.printStackTrace()
-                    result("error")
+            override fun onPreviewError(e: Exception?) {
+                e?.printStackTrace()
+                Shared.activity?.runOnUiThread {
+                    result.error(null, "error", null)
                 }
-            })
+            }
+        })
     }
 
     private fun getCameraInfo(result: MethodChannel.Result) {
