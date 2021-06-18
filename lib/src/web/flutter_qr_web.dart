@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:html' as html;
 import 'dart:js_util';
 import 'dart:ui' as ui;
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -308,7 +309,7 @@ class QRViewControllerWeb implements QRViewController {
   }
 
   @override
-  Future<String> captureImage() {
+  Future<Uint8List> captureImage() {
     // TODO: implement captureImage
     throw UnimplementedError();
   }
