@@ -200,7 +200,7 @@ public class QRView:NSObject,FlutterPlatformView {
                     result([UInt8]())
                     return
                 }
-                let imageData = UIImageJPEGRepresentation(mImage, 0.50)!
+                let imageData = UIImageJPEGRepresentation(mImage, 1.0)!
                 result(FlutterStandardTypedData.init(bytes: imageData))
             }
         }
