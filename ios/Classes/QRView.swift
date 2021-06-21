@@ -76,6 +76,8 @@ public class QRView:NSObject,FlutterPlatformView {
                     self?.getFlashInfo(result)
                 case "getSystemFeatures":
                     self?.getSystemFeatures(result)
+                case "captureImage":
+                    self?.captureImage(result)
                 default:
                     result(FlutterMethodNotImplemented)
                     return
@@ -187,6 +189,19 @@ public class QRView:NSObject,FlutterPlatformView {
         if let sc: MTBBarcodeScanner = self.scanner {
             if sc.isScanning() {
                 sc.stopScanning()
+            }
+        }
+    }
+    
+    func captureImage(_ result: @escaping FlutterResult){
+        if let sc: MTBBarcodeScanner = self.scanner {
+            sc.captureStillImage { (image, error) in
+                guard let mImage = image else {
+                    result([UInt8]())
+                    return
+                }
+                let imageData = UIImageJPEGRepresentation(mImage, 0.50)!
+                result(FlutterStandardTypedData.init(bytes: imageData))
             }
         }
     }
